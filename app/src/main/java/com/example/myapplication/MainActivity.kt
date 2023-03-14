@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.zxing.integration.android.IntentIntegrator
+import org.json.JSONException
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +25,14 @@ class MainActivity : AppCompatActivity() {
 
         launcher = registerForActivityResult(ZXingActivityResultContract()){ scannedData:String? ->
             if (scannedData!=null){
-                parseQRData(scannedData)
+                try {
+                    parseQRData(scannedData)
+                }
+                catch (e: JSONException) {
+                    // Data not in the expected format. So, whole object as toast message.
+                    Toast.makeText(this, scannedData, Toast.LENGTH_LONG).show()
+                }
+
             }else{
                 messageErrorScanningQR()
             }
