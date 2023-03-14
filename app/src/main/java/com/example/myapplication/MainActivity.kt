@@ -1,18 +1,19 @@
 package com.example.myapplication
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.zxing.integration.android.IntentIntegrator
-import org.json.JSONException
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var qrScanIntegrator: IntentIntegrator? = null
-
+    private lateinit var launcher: ActivityResultLauncher<Unit>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -20,13 +21,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         setOnClickListener()
-        setupScanner()
+
+        launcher = registerForActivityResult(ZXingActivityResultContract()){ scannedData:String? ->
+            if (scannedData!=null){
+                parseQRData(scannedData)
+            }else{
+                messageErrorScanningQR()
+            }
+        }
 
     }
-    private fun setupScanner() {
-        qrScanIntegrator = IntentIntegrator(this)
-        qrScanIntegrator?.setOrientationLocked(false)
+
+    private fun parseQRData(scannedData: String) {
+        val data = JSONObject(scannedData)
+        val name = data.getString("name")
+        val site = data.getString("siteName")
+        binding.siteName.text = site
+        binding.name.text = name
     }
+
+    private fun messageErrorScanningQR() {
+        Toast.makeText(this, "Error while scanning QR", Toast.LENGTH_SHORT).show()
+    }
+
     private fun setOnClickListener() {
         binding.btnScan.setOnClickListener{
             performAction()
@@ -35,35 +52,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun performAction() {
         // Code to perform action when button is clicked.
-        qrScanIntegrator?.initiateScan()
+        launcher.launch(Unit)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result != null) {
-            // If QRCode has no data.
-            if (result.contents == null) {
-                Toast.makeText(this, getString(R.string.result_not_found), Toast.LENGTH_LONG).show()
-            } else {
-                // If QRCode contains data.
-                try {
-                    // Converting the data to json format
-                    val obj = JSONObject(result.contents)
-
-                    // Show values in UI.
-                    binding.name.text = obj.getString("name")
-                    binding.siteName.text = obj.getString("site_name")
-
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-
-                    // Data not in the expected format. So, whole object as toast message.
-                    Toast.makeText(this, result.contents, Toast.LENGTH_LONG).show()
-                }
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+    inner class ZXingActivityResultContract: ActivityResultContract<Unit, String?>(){
+        override fun createIntent(context: Context, input: Unit): Intent {
+            val qrScanIntegrator: IntentIntegrator = IntentIntegrator(this@MainActivity)
+            qrScanIntegrator.setOrientationLocked(true)
+            return qrScanIntegrator.createScanIntent()
         }
 
+        override fun parseResult(resultCode: Int, intent: Intent?): String? {
+            val result: String? = if (resultCode == RESULT_OK && intent!=null){
+                val result = IntentIntegrator.parseActivityResult(resultCode, intent)
+                result.contents
+            } else null
+            return result
+        }
     }
 }
