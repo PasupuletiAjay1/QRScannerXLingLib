@@ -18,17 +18,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nameKey"
+        android:id="@+id/UUIDKey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_default"
-        android:text="@string/name"
+        android:text="@string/UUIDKeyText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnScan" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/UUID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_default"
@@ -36,20 +36,20 @@
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameKey" />
+        app:layout_constraintTop_toBottomOf="@+id/UUIDKey" />
 
     <TextView
-        android:id="@+id/site_name_key"
+        android:id="@+id/deeplinkUrlKey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_default"
-        android:text="@string/site_name"
+        android:text="@string/deeplinkUrlKeyText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/UUID" />
 
     <TextView
-        android:id="@+id/site_name"
+        android:id="@+id/deeplinkUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_default"
@@ -57,7 +57,7 @@
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/site_name_key" />
+        app:layout_constraintTop_toBottomOf="@+id/deeplinkUrlKey" />
 
 <!--    <Button-->
 <!--        android:id="@+id/showQRScanner"-->

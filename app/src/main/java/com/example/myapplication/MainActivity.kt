@@ -42,10 +42,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun parseQRData(scannedData: String) {
         val data = JSONObject(scannedData)
-        val name = data.getString("name")
-        val site = data.getString("site_name")
-        binding.siteName.text = site
-        binding.name.text = name
+        val deeplinkUrl = data.getString("deeplinkUrl")
+        val UUID = data.getString("UUID")
+        binding.deeplinkUrl.text = deeplinkUrl
+        binding.UUID.text = UUID
     }
 
     private fun messageErrorScanningQR() {
